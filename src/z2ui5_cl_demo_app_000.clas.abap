@@ -373,6 +373,12 @@ CLASS z2ui5_cl_demo_app_000 IMPLEMENTATION.
                          mode      = `LineMode`
                          class     = `sapUiTinyMarginEnd sapUiTinyMarginBottom` ).
 
+    panel->generic_tile( header    = `PDF Viewer from XSTRING`
+                         subheader = `Encode XSTRING to Base64 & display`
+                         press     = client->_event( `z2ui5_cl_demo_app_366` )
+                         mode      = `LineMode`
+                         class     = `sapUiTinyMarginEnd sapUiTinyMarginBottom` ).
+
     panel->generic_tile( header    = `Formatted Text`
                          subheader = `Display HTML`
                          press     = client->_event( `Z2UI5_CL_DEMO_APP_015` )
