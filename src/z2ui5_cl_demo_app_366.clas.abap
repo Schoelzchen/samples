@@ -43,26 +43,37 @@ CLASS z2ui5_cl_demo_app_366 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_xml_view=>factory( ).
-    DATA(page) = view->shell(
-        )->page(
-            title          = `abap2UI5 - Display PDF from XSTRING`
-            navbuttonpress = client->_event_nav_app_leave( )
-            shownavbutton  = client->check_app_prev_stack( )
-            class          = `sapUiContentPadding` ).
-    page->button(
-        text  = `Display PDF`
-        icon  = `sap-icon://pdf-attachment`
-        type  = `Emphasized`
-        press = client->_event( `DISPLAY_PDF` ) ).
+    DATA(view) = z2ui5_cl_ui5_view_builder=>factory( ).
+    DATA(page) = view->ele( n = `View` ns = `mvc`
+        )->a( n = `xmlns`         v = `sap.m`
+        )->a( n = `xmlns:mvc`     v = `sap.ui.core.mvc`
+        )->a( n = `xmlns:html`    v = `http://www.w3.org/1999/xhtml`
+        )->a( n = `displayBlock`  v = `true`
+        )->a( n = `height`        v = `100%`
+
+        )->ele( `Shell`
+            )->ele( `Page`
+                )->a( n = `title`          v = `abap2UI5 - Display PDF from XSTRING`
+                )->a( n = `class`          v = `sapUiContentPadding`
+                )->a( n = `showNavButton`  b = client->check_app_prev_stack( )
+                )->a( n = `navButtonPress` v = client->_event_nav_app_leave( ) ).
+
+    page->tag( `Button`
+        )->a( n = `text`  v = `Display PDF`
+        )->a( n = `icon`  v = `sap-icon://pdf-attachment`
+        )->a( n = `type`  v = `Emphasized`
+        )->a( n = `press` v = client->_event( `DISPLAY_PDF` ) ).
 
     IF pdf_source IS NOT INITIAL.
-      page->_generic(
-          name   = `iframe`
-          ns     = `html`
-          t_prop = VALUE #( ( n = `src`    v = pdf_source )
-                            ( n = `height` v = `700px` )
-                            ( n = `width`  v = `99%` ) ) ).
+
+      " the data URI is document data, not binding vocabulary, so it is set
+      " with t - a curly brace in a value passed to v would be read by UI5
+      " as a binding path instead of being rendered
+      page->tag( n = `iframe` ns = `html`
+          )->a( n = `src`    t = pdf_source
+          )->a( n = `height` v = `700px`
+          )->a( n = `width`  v = `99%` ).
+
     ENDIF.
 
     client->view_display( view->stringify( ) ).
